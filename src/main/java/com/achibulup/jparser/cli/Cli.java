@@ -1,6 +1,9 @@
 package com.achibulup.jparser.cli;
 
 import java.io.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import com.achibulup.jparser.format.Format;
 import com.achibulup.jparser.element.Project;
@@ -23,12 +26,19 @@ public class Cli {
   }
 
   public static void main(String[] args) throws IOException {
+    List<String> argList = new ArrayList<String>(Arrays.asList(args));
+    argList.removeIf(String::isEmpty);
     try {
       BufferedReader buffReader = new BufferedReader(new InputStreamReader(System.in));
       String path = null;
-      if (args.length == 0) {
+      if (true) {
         System.out.print("Enter the folder or file to parse: ");
         path = buffReader.readLine();
+      } else {
+        System.out.println(argList.size());
+        for (String arg : argList) {
+          System.out.println(arg.length() + " " + arg);
+        }
       }
       var file = new File(path);
       if (!file.exists()) {
