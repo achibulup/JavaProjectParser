@@ -1,7 +1,6 @@
 package com.achibulup.jparser.cli;
 
-import java.io.File;
-import java.io.FileNotFoundException;
+import java.io.*;
 
 import com.achibulup.jparser.format.Format;
 import com.achibulup.jparser.element.Project;
@@ -22,16 +21,49 @@ public class Cli {
     FIRST, SECOND
   }
 
-  public static void main(String[] args) {
+  public static void main(String[] args) throws IOException {
     try {
-      var file = new File("src/main/java/com/achibulup/jparser");
+      BufferedReader buffReader = new BufferedReader(new InputStreamReader(System.in));
+      String path = null;
+      if (args.length == 0) {
+        System.out.print("Enter the folder or file to parse: ");
+        path = buffReader.readLine();
+      }
+      var file = new File(path);
       if (!file.exists()) {
-        throw new FileNotFoundException(file.getPath() + "not found");
+        throw new FileNotFoundException(file.getPath() + " not found");
       }
       Project project = ProjectParser.parse(file);
-      System.out.println(Format.toString(project));
+      Reader parseResult = new StringReader(Format.toString(project));
+      BufferedReader resultReader = new BufferedReader(parseResult);
+      OutputStream output = new FileOutputStream("parse-result.txt");
+      BufferedWriter outputWriter = new BufferedWriter(new OutputStreamWriter(output));
+      transfer(resultReader, outputWriter);
+      output.close();
+      System.out.println("\n"
+          + "=".repeat(30) + "\n"
+          + "Parse successful" + "\n"
+          + "=".repeat(30) + "\n"
+          + "\n"
+          + "Parse result saved at parse-result.txt");
     } catch (Exception e) {
       e.printStackTrace();
     }
+  }
+
+  public static void transfer(BufferedReader reader, Writer writer) throws IOException {
+    while (true) {
+      String nextLine = reader.readLine();
+      if (nextLine == null) {
+        break;
+      }
+      if (writer instanceof PrintWriter) {
+        ((PrintWriter) writer).println(nextLine);
+      } else {
+        writer.write(nextLine);
+        writer.write("\n");
+      }
+    }
+    writer.flush();
   }
 }
