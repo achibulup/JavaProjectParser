@@ -65,7 +65,7 @@ public class Cli {
         filter = (aFile) -> true;
       }
       Project project = ProjectParser.parse(file, filter);
-      System.out.println(new DefaultPrettyPrinter().print(StaticJavaParser.parse(file)));
+      // System.out.println(new DefaultPrettyPrinter().print(StaticJavaParser.parse(file)));
       Reader parseResult = new StringReader(Format.toString(project));
       BufferedReader resultReader = new BufferedReader(parseResult);
       OutputStream output = new FileOutputStream("parse-result.txt");
