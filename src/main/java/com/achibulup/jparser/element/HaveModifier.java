@@ -13,7 +13,7 @@ public abstract class HaveModifier {
       Modifier.Keyword.PRIVATE
   );
 
-  private List<Modifier> modifiers = new ArrayList<>();
+  private final List<Modifier> modifiers = new ArrayList<>();
 
   public HaveModifier(List<Modifier> modifiers) {
     this.modifiers.addAll(modifiers);

@@ -15,13 +15,13 @@ public class Class extends Declaration {
   private Kind kind;
   private Optional<Class> outerClass = Optional.empty();
   private final List<Type> extendedTypes = new ArrayList<>();
-  private List<Type> implementedTypes = new ArrayList<>();
+  private final List<Type> implementedTypes = new ArrayList<>();
 
-  private List<String> enumEntries = new ArrayList<>();
-  private List<Class> innerClasses = new ArrayList<>();
-  private List<Field> fields = new ArrayList<>();
-  private List<Constructor> constructors = new ArrayList<>();
-  private List<Method> methods = new ArrayList<>();
+  private final List<String> enumEntries = new ArrayList<>();
+  private final List<Class> innerClasses = new ArrayList<>();
+  private final List<Field> fields = new ArrayList<>();
+  private final List<Constructor> constructors = new ArrayList<>();
+  private final List<Method> methods = new ArrayList<>();
 
   public Class(String unqualifiedName, Kind kind, AccessSpecifier accessSpec, List<Modifier> modifiers) {
     super(accessSpec, modifiers);

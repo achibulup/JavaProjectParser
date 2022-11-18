@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Constructor extends Declaration {
-  private List<Parameter> parameters = new ArrayList<>();
+  private final List<Parameter> parameters = new ArrayList<>();
 
   public Constructor(AccessSpecifier accessSpec, List<Modifier> modifiers) {
     super(accessSpec, modifiers);

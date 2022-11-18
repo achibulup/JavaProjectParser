@@ -8,7 +8,7 @@ import java.util.List;
 public class Parameter {
   private Type type;
   private String name;
-  private List<Modifier> modifiers = new ArrayList<>();
+  private final List<Modifier> modifiers = new ArrayList<>();
 
   public Parameter(Type type, String name) {
     setType(type);

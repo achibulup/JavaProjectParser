@@ -9,7 +9,7 @@ import java.util.List;
 public class Method extends Declaration {
   private String name;
   private Type returnType;
-  private List<Parameter> parameters = new ArrayList<>();
+  private final List<Parameter> parameters = new ArrayList<>();
 
   public Method(String name, Type returnType, AccessSpecifier accessSpec, List<Modifier> modifiers) {
     super(accessSpec, modifiers);

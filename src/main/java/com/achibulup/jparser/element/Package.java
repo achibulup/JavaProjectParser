@@ -4,9 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Package {
-  String fullName;
+  private String fullName;
 
-  List<Class> directClasses = new ArrayList<>();
+  private final List<Class> directClasses = new ArrayList<>();
 
   public Package(String fullName) {
     setFullName(fullName);
