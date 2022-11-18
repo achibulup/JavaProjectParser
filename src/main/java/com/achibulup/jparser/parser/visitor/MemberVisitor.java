@@ -5,14 +5,11 @@ import java.util.Optional;
 
 import com.achibulup.jparser.element.*;
 import com.achibulup.jparser.element.Class;
+import com.achibulup.jparser.element.Parameter;
 import com.achibulup.jparser.parser.ClassParser;
 import com.github.javaparser.ast.AccessSpecifier;
 import com.github.javaparser.ast.Modifier;
-import com.github.javaparser.ast.body.ClassOrInterfaceDeclaration;
-import com.github.javaparser.ast.body.ConstructorDeclaration;
-import com.github.javaparser.ast.body.EnumDeclaration;
-import com.github.javaparser.ast.body.FieldDeclaration;
-import com.github.javaparser.ast.body.MethodDeclaration;
+import com.github.javaparser.ast.body.*;
 import com.github.javaparser.ast.visitor.VoidVisitorAdapter;
 
 public class MemberVisitor extends VoidVisitorAdapter<Class> {

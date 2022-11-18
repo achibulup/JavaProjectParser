@@ -7,6 +7,7 @@ import com.github.javaparser.ast.AccessSpecifier;
 import com.github.javaparser.ast.Modifier;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class Format {
@@ -15,9 +16,9 @@ public class Format {
   public static String toString(Project project) {
     StringBuilder builder = new StringBuilder();
     for (Package aPackage : project.getPackages()) {
-      builder.append(aPackage.getFullName() + " :\n" + "=".repeat(60) + "\n\n");
+      builder.append("\n" + aPackage.getFullName() + " :\n" + "=".repeat(60) + "\n\n");
       for (Class clazz : aPackage.getDirectClasses()) {
-        builder.append(toString(clazz) + "\n\n");
+        builder.append(toString(clazz) + "\n");
       }
     }
     return builder.toString();
@@ -26,62 +27,71 @@ public class Format {
   public static String toString(Class clazz) {
     StringBuilder builder = new StringBuilder();
 
-    int width = 0;
-    String className = clazz.getName();
-    width = className.length();
+    List<String> className = new ArrayList<>();
+    switch (clazz.getKind()) {
+      case CONCRETE :
+        break;
+      case ABSTRACT:
+        className.add("<<abstract>>");
+        break;
+      case INTERFACE:
+        className.add("<<interface>>");
+        break;
+      case ENUM:
+        className.add("<<enumeration>>");
+        break;
+    }
+    className.add(clazz.getName());
+
+    List<String> enumEntries = new ArrayList<>();
+    if (clazz.getKind() == Class.Kind.ENUM) {
+      for (String valueName : clazz.getEnumEntries()) {
+        enumEntries.add(valueName);
+      }
+    }
 
     List<String> innerClasses = new ArrayList<>();
     for (Class innerClass : clazz.getInnerClasses()) {
       String innerClassStr = innerClassDeclString(innerClass);
-      width = Math.max(width, innerClassStr.length());
       innerClasses.add(innerClassStr);
     }
 
     List<String> fields = new ArrayList<>();
     for (Field field : clazz.getFields()) {
       String fieldStr = toString(field);
-      width = Math.max(width, fieldStr.length());
       fields.add(fieldStr);
     }
 
     List<String> constructors = new ArrayList<>();
     for (Constructor ctor : clazz.getConstructors()) {
       String ctorStr = toString(clazz, ctor);
-      width = Math.max(width, ctorStr.length());
       constructors.add(ctorStr);
     }
 
     List<String> methods = new ArrayList<>();
     for (Method method : clazz.getMethods()) {
       String methodStr = toString(method);
-      width = Math.max(width, methodStr.length());
       methods.add(methodStr);
     }
 
-    builder.append(makeHorizontalLine(width));
-    builder.append(makeBoxedRow(className, width, Alignment.MIDDLE));
-    if (!innerClasses.isEmpty()) {
-      builder.append(makeHorizontalLine(width));
-      for (String line : innerClasses) {
-        builder.append(makeBoxedRow(line, width));
+    int width = 0;
+    for (List<String> block : Arrays.asList(className, enumEntries, innerClasses, fields, constructors, methods)) {
+      for (String line : block) {
+        width = Math.max(width, line.length());
       }
     }
-    if (!fields.isEmpty()) {
-      builder.append(makeHorizontalLine(width));
-      for (String line : fields) {
-        builder.append(makeBoxedRow(line, width));
-      }
+
+    builder.append(makeHorizontalLine(width));;
+    for (String line : className) {
+      builder.append(makeBoxedRow(line, width, Alignment.MIDDLE));
     }
-    if (!constructors.isEmpty()) {
-      builder.append(makeHorizontalLine(width));
-      for (String line : constructors) {
-        builder.append(makeBoxedRow(line, width));
-      }
-    }
-    if (!methods.isEmpty()) {
-      builder.append(makeHorizontalLine(width));
-      for (String line : methods) {
-        builder.append(makeBoxedRow(line, width));
+
+    for (List<String> block : Arrays.asList(enumEntries, innerClasses, fields, constructors, methods)) {
+      if (!block.isEmpty()) {
+        builder.append(makeHorizontalLine(width));
+        for (String line : block) {
+          builder.append(makeBoxedRow(line, width, Alignment.LEFT));
+        }
       }
     }
     builder.append(makeHorizontalLine(width));

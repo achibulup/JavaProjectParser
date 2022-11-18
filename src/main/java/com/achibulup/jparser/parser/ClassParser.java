@@ -27,6 +27,7 @@ public class ClassParser {
     var implementedTypes = thisClass.getImplementedTypes();
     decl.getImplementedTypes().forEach(implemented
         -> implementedTypes.add(new Type(implemented.getNameAsString())));
+    decl.getEntries().forEach(entry -> thisClass.addEnumEntry(entry.getNameAsString()));
     var visitor = new MemberVisitor();
     decl.getMembers().forEach(mem -> mem.accept(visitor, thisClass));
     thisClass.organize();
@@ -42,7 +43,7 @@ public class ClassParser {
     }
     return Class.Kind.CONCRETE;
   }
-  public static Class.Kind getKind(EnumDeclaration decl) {
+  public static Class.Kind getKind(EnumDeclaration unused) {
     return Class.Kind.ENUM;
   }
 }

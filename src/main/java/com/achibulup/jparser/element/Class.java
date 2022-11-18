@@ -9,13 +9,15 @@ import com.github.javaparser.ast.AccessSpecifier;
 import com.github.javaparser.ast.Modifier;
 
 public class Class extends Declaration {
-  public enum Kind { CONCRETE, ABSTRACT, INTERFACE, ENUM };
+  public enum Kind { CONCRETE, ABSTRACT, INTERFACE, ENUM }
 
   private String unqualifiedName;
   private Kind kind;
   private Optional<Class> outerClass = Optional.empty();
-  private List<Type> extendedTypes = new ArrayList<>();
+  private final List<Type> extendedTypes = new ArrayList<>();
   private List<Type> implementedTypes = new ArrayList<>();
+
+  private List<String> enumEntries = new ArrayList<>();
   private List<Class> innerClasses = new ArrayList<>();
   private List<Field> fields = new ArrayList<>();
   private List<Constructor> constructors = new ArrayList<>();
@@ -55,6 +57,13 @@ public class Class extends Declaration {
     return implementedTypes;
   }
 
+  public List<String> getEnumEntries() {
+    if (getKind() != Kind.ENUM) {
+      throw new RuntimeException("this class is not enum");
+    }
+    return enumEntries;
+  }
+
   public List<Class> getInnerClasses() {
     return innerClasses;
   }
@@ -89,6 +98,13 @@ public class Class extends Declaration {
 
   public void addImplementedType(Type implemented) {
     implementedTypes.add(implemented);
+  }
+
+  public void addEnumEntry(String valueName) {
+    if (getKind() != Kind.ENUM) {
+      throw new RuntimeException("this class is not enum");
+    }
+    enumEntries.add(valueName);
   }
 
   public void addInnerClass(Class innerClass) {
