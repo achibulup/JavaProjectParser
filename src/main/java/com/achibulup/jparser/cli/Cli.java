@@ -23,9 +23,6 @@ public class Cli {
   }
 
   public static void main(String[] args) {
-    System.out.println(args.length);
-    System.out.println(String.join("\n", args));
-
     try {
       var file = new File("src/main/java/com/achibulup/jparser");
       if (!file.exists()) {

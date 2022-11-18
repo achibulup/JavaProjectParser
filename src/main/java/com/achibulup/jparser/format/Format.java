@@ -10,6 +10,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Format {
+  public static enum Alignment { LEFT, RIGHT, MIDDLE };
+
   public static String toString(Project project) {
     StringBuilder builder = new StringBuilder();
     for (Package aPackage : project.getPackages()) {
@@ -57,7 +59,7 @@ public class Format {
     }
 
     builder.append(makeHorizontalLine(width));
-    builder.append(makeBoxedRow(className, width));
+    builder.append(makeBoxedRow(className, width, Alignment.MIDDLE));
     if (!innerClasses.isEmpty()) {
       builder.append(makeHorizontalLine(width));
       for (String line : innerClasses) {
@@ -88,39 +90,20 @@ public class Format {
   }
 
   public static String innerClassDeclString(Class innerClass) {
-    String result = toString(innerClass.getAccessSpec());
-    for (Modifier modf : innerClass.getModifiers()) {
-      result += " " + modf;
-    }
-    result += " " + toString(innerClass.getKind()) + " " + innerClass.getName();
-    return result;
+    return makeDeclHeader(innerClass) + toString(innerClass.getKind()) + " " + innerClass.getUnqualifiedName();
   }
 
   public static String toString(Field field) {
-    String result = toString(field.getAccessSpec());
-    for (var modifier : field.getModifiers()) {
-      result += " " + modifier;
-    }
-    result += " " + field.getType().getName() + " " + field.getName();
-    return result;
+    return makeDeclHeader(field) + field.getType().getName() + " " + field.getName();
   }
 
   public static String toString(Class clazz, Constructor ctor) {
-    String result = toString(ctor.getAccessSpec());
-    for (var modifier : ctor.getModifiers()) {
-      result += " " + modifier;
-    }
-    result += " " + clazz.getName() + toString(ctor.getParameters());
-    return result;
+    return makeDeclHeader(clazz) + clazz.getName() + toString(ctor.getParameters());
   }
 
   public static String toString(Method method) {
-    String result = toString(method.getAccessSpec());
-    for (var modifier : method.getModifiers()) {
-      result += " " + modifier;
-    }
-    result += " " + method.getName() + toString(method.getParameters());
-    return result;
+    return makeDeclHeader(method)
+         + method.getReturnType().getName() + " " + method.getName() + toString(method.getParameters());
   }
 
   public static String toString(List<Parameter> parameterList) {
@@ -150,6 +133,14 @@ public class Format {
     }
   }
 
+  public static String makeDeclHeader(Declaration decl) {
+    String result = toString(decl.getAccessSpec()) + " ";
+    for (var modifier : decl.getModifiers()) {
+      result += modifier;
+    }
+    return result;
+  }
+
   public static String toString(AccessSpecifier spec) {
     switch (spec) {
       case PUBLIC :
@@ -172,5 +163,17 @@ public class Format {
   private static String makeBoxedRow(String line, int width) {
     int padding = width - line.length();
     return "| " + line + " ".repeat(padding) + " |\n";
+  }
+
+  private static String makeBoxedRow(String line, int width, Alignment alignment) {
+    int padding = width - line.length();
+    switch (alignment) {
+      case LEFT :
+        return "| " + line + " ".repeat(padding) + " |\n";
+      case RIGHT:
+        return "| " + " ".repeat(padding) + line + " |\n";
+      default:
+        return "| " + " ".repeat(padding / 2) + line + " ".repeat((padding + 1) / 2) + " |\n";
+    }
   }
 }

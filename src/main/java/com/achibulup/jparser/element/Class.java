@@ -11,7 +11,7 @@ import com.github.javaparser.ast.Modifier;
 public class Class extends Declaration {
   public enum Kind { CONCRETE, ABSTRACT, INTERFACE, ENUM };
 
-  private String name;
+  private String unqualifiedName;
   private Kind kind;
   private Optional<Class> outerClass = Optional.empty();
   private List<Type> extendedTypes = new ArrayList<>();
@@ -21,14 +21,22 @@ public class Class extends Declaration {
   private List<Constructor> constructors = new ArrayList<>();
   private List<Method> methods = new ArrayList<>();
 
-  public Class(String name, Kind kind, AccessSpecifier accessSpec, List<Modifier> modifiers) {
+  public Class(String unqualifiedName, Kind kind, AccessSpecifier accessSpec, List<Modifier> modifiers) {
     super(accessSpec, modifiers);
-    setName(name);
+    setName(unqualifiedName);
     setKind(kind);
   }
 
   public String getName() {
-    return name;
+    String result = getUnqualifiedName();
+    if (!getOuterClass().isEmpty()) {
+      result = getOuterClass().get().getName() + "." + result;
+    }
+    return result;
+  }
+
+  public String getUnqualifiedName() {
+    return unqualifiedName;
   }
 
   public Kind getKind() {
@@ -63,8 +71,8 @@ public class Class extends Declaration {
     return methods;
   }
 
-  public void setName(String name) {
-    this.name = name;
+  public void setName(String unqualifiedName) {
+    this.unqualifiedName = unqualifiedName;
   }
 
   public void setKind(Kind kind) {
