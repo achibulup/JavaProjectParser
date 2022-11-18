@@ -5,6 +5,7 @@ import java.io.*;
 import com.achibulup.jparser.format.Format;
 import com.achibulup.jparser.element.Project;
 import com.achibulup.jparser.parser.ProjectParser;
+import com.achibulup.jparser.parser.visitor.FileVisitor;
 
 public class Cli {
   public static int a, e;
@@ -33,7 +34,12 @@ public class Cli {
       if (!file.exists()) {
         throw new FileNotFoundException(file.getPath() + " not found");
       }
-      Project project = ProjectParser.parse(file);
+      FileFilter filter = FileVisitor.DEFAULT_FILTER;
+      if (file.isFile() && !file.getPath().endsWith(".java")) {
+        System.out.println("Warning: the file is not a java file\n");
+        filter = (aFile) -> true;
+      }
+      Project project = ProjectParser.parse(file, filter);
       Reader parseResult = new StringReader(Format.toString(project));
       BufferedReader resultReader = new BufferedReader(parseResult);
       OutputStream output = new FileOutputStream("parse-result.txt");

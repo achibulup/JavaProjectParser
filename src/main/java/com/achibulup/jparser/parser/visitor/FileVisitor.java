@@ -10,7 +10,8 @@ import com.github.javaparser.StaticJavaParser;
 import com.github.javaparser.ast.CompilationUnit;
 
 public class FileVisitor {
-  private FileFilter filter = (file) -> true;
+  public static final FileFilter DEFAULT_FILTER = (file) -> (!file.isFile() || file.getPath().endsWith(".java"));
+  private FileFilter filter = DEFAULT_FILTER;
 
   public FileVisitor() {
   }
