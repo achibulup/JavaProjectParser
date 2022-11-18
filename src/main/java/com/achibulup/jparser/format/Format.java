@@ -1,14 +1,18 @@
 package com.achibulup.jparser.format;
 
-import com.achibulup.jparser.element.*;
-import com.achibulup.jparser.element.Class;
-import com.achibulup.jparser.element.Package;
-import com.github.javaparser.ast.AccessSpecifier;
-import com.github.javaparser.ast.Modifier;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
+import com.achibulup.jparser.element.Class;
+import com.achibulup.jparser.element.Constructor;
+import com.achibulup.jparser.element.Declaration;
+import com.achibulup.jparser.element.Field;
+import com.achibulup.jparser.element.Method;
+import com.achibulup.jparser.element.Package;
+import com.achibulup.jparser.element.Parameter;
+import com.achibulup.jparser.element.Project;
+import com.github.javaparser.ast.AccessSpecifier;
 
 public class Format {
   public static enum Alignment { LEFT, RIGHT, MIDDLE };
@@ -171,8 +175,7 @@ public class Format {
   }
 
   private static String makeBoxedRow(String line, int width) {
-    int padding = width - line.length();
-    return "| " + line + " ".repeat(padding) + " |\n";
+    return makeBoxedRow(line, width, Alignment.LEFT);
   }
 
   private static String makeBoxedRow(String line, int width, Alignment alignment) {

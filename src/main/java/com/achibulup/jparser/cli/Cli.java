@@ -1,14 +1,29 @@
 package com.achibulup.jparser.cli;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileFilter;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
+import java.io.Reader;
+import java.io.StringReader;
+import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import com.achibulup.jparser.format.Format;
 import com.achibulup.jparser.element.Project;
+import com.achibulup.jparser.format.Format;
 import com.achibulup.jparser.parser.ProjectParser;
 import com.achibulup.jparser.parser.visitor.FileVisitor;
+import com.github.javaparser.StaticJavaParser;
+import com.github.javaparser.printer.DefaultPrettyPrinter;
 
 public class Cli {
   public static int a, e;
@@ -40,7 +55,7 @@ public class Cli {
           System.out.println(arg.length() + " " + arg);
         }
       }
-      var file = new File(path);
+      File file = new File(path);
       if (!file.exists()) {
         throw new FileNotFoundException(file.getPath() + " not found");
       }
@@ -50,6 +65,7 @@ public class Cli {
         filter = (aFile) -> true;
       }
       Project project = ProjectParser.parse(file, filter);
+      System.out.println(new DefaultPrettyPrinter().print(StaticJavaParser.parse(file)));
       Reader parseResult = new StringReader(Format.toString(project));
       BufferedReader resultReader = new BufferedReader(parseResult);
       OutputStream output = new FileOutputStream("parse-result.txt");
